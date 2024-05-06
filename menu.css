@@ -1,0 +1,27 @@
+#menu
+{
+	margin: 0;
+	padding: 0 0 20px 10px;
+}
+
+#menu li
+{
+	margin: 0;
+	padding: 0;
+	display: inline;
+	list-style-type: none;
+}
+
+#menu a
+{
+	float: right;
+	padding: 0 12px 10px 12px;
+	text-decoration: none;
+	color: #FFF;
+}
+
+#menu a:hover
+{
+	color: #FF80A8;
+	background: url(menu-hover.jpg) no-repeat bottom center;
+}
