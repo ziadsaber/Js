@@ -1,132 +1,105 @@
 // Define an array of objects to store quiz questions, options, and correct answers
-const quizQuestions = [
+const questions = [
   {
-    question: "Javascript is an _______ language?",
+    question: "What kind of language is Javascript?",
     options: [
-      "1. Object-oriented",
-      "2. Object-based",
-      "3. Procedural",
-      "4. None of the above",
+      "Object-oriented",
+      " Object-based",
+      " Procedural",
+      " None of the above",
     ],
-    correctAnswer: "1",
+    answer: 1, // Index of the correct answer (0-based)
   },
   {
-    question:
-      "Which of the following keywords is used to define a variable in Javascript?",
-    options: ["1. var", "2. let", "3. Both of them", "4. None "],
-    correctAnswer: "3",
+    question: "How do you define a variable in Javascript?",
+    options: [" var", " let", "Both", " None"],
+    answer: 2,
   },
   {
-    question:
-      "Which of the following methods can be used to display data in some form using Javascript?",
+    question: "What methods can display data in Javascript?",
     options: [
-      "1. document.write()",
-      "2. console.log()",
-      "3. window.alert()",
-      "4. all of the above",
+      " document.write()",
+      " console.log()",
+      " window.alert()",
+      " All of the above",
     ],
-    correctAnswer: "4",
+    answer: 3,
   },
 ];
 
-// Function to display a question and options in the console with styling
-function displayQuestion(questionObj) {
+// First function to show the questions and format of it8
+function showQuestion(q) {
+  // q parameter for making obkject
   console.log(
-    `%c${questionObj.question}`,
-    "color: #4285F4; font-weight: bold; font-size: 18px;"
+    "%c" + q.question,
+    "color: #4CAF50; font-size: 18px; font-weight: bold"
+  ); // Display the question
+  q.options.forEach(
+    (
+      option,
+      index // for each loop to iterate over every option
+    ) =>
+      console.log(
+        `  - %c${index + 1}. ${option}`,
+        "color: #2196F3; font-size: 16px;"
+      ) // beacuse the array start with index zero we +1 to index and show questions
   );
-  questionObj.options.forEach((option, index) => {
-    console.log(
-      `%c${option}`,
-      "color: #0F9D58; font-size: 16px; font-weight: bold;"
-    );
-  });
 }
 
-// Function to validate user's answer and provide feedback
-function validateAnswer(questionObj, userAnswer) {
-  if (userAnswer === questionObj.correctAnswer) {
-    console.log("%cCorrect!", "color: #0F9D58; font-weight: bold;");
-    return 1; // Return 1 if answer is correct
-  } else {
+// Second function to ask the question with input
+function askQuestion(q) {
+  //give q parameter
+  showQuestion(q); // recal function to display question
+  let userAnswer; // var to store input
+  do {
+    userAnswer = parseInt(
+      // to change the string to number
+      prompt("Enter your answer (number between 1 and 4):")
+    ); // NAN : NOT A NUMBER
+  } while (isNaN(userAnswer) || userAnswer < 1 || userAnswer > 4); // to check invalid inputs
+  return userAnswer - 1; // Adjust for 0-based indexing
+}
+
+// Third function to check the answer and provide informative feedback
+function checkAnswer(q, answer) {
+  // two parameters : q and the answer from prev function
+  if (answer === q.answer) {
+    // if user input = answer from array
     console.log(
-      "%cIncorrect. The correct answer is: " +
-        questionObj.options[parseInt(questionObj.correctAnswer) - 1],
-      "color: #DB4437; font-weight: bold;"
-    );
-    return 0; // Return 0 if answer is incorrect
+      "%cCorrect!",
+      "color: #4CAF50; font-size: 16px; font-weight: bold"
+    ); // output
+    return 1;
+  } else {
+    // if answer is incorrect
+    console.log(
+      `%cIncorrect. The correct answer is: ${q.options[q.answer]}`,
+      "color: #F44336; font-size: 16px;"
+    ); // print the question with the correct answer of it
+    return 0;
   }
 }
 
-// Function to start the quiz
+// Fourth function to start the quiz, greet the user, and keep track of score
 function startQuiz() {
-  let score = 0;
-  const timePerQuestion = 20; // Time per question in seconds
-
-  // ASCII art for quiz title
-  console.log(
-    `%c
-    ______  __  __   ______   __   __   ______  __   __   __    __    
-   /\\  == \\/\\ \\/\\ \\ /\\  ___\\ /\\ \"-.\\ \\ /\\  == \\/\\ \"-.\\ \\ /\\ "-./  \\   
-   \\ \\  __<\\ \\ \\_\\ \\\\ \\ \\____\\ \\ \\-.  \\\\ \\  __<\\ \\ \\-.  \\\\ \\ \\-./\\ \\  
-    \\ \\_____\\\\/\\_____\\\\ \\_____\\\\ \\_\\\"\\"\\_\\\\ \\_____\\\\ \\_\"\\"\\_\\\\ \\_\\ \\ \\_\\ 
-     \\/_____/ \\/_____/ \\/_____/ \\/_/ \\/_/ \\/_____/ \\/_/ \\/_/ \\/_/  \\/_/
-
-%cWelcome to the JavaScript Quiz! Answer the following questions within the time limit to test your knowledge.\n`,
-    "color: #4285F4; font-weight: bold; font-size: 16px;",
-    "color: #4285F4; font-size: 14px;"
-  );
-
-  // Iterate over each question
-  quizQuestions.forEach((question, index) => {
+  let userName = prompt("Welcome to the JavaScript Quiz! What is your name?"); // first output to get users input
+  let score = 0; // start score with zero initial value
+  for (const question of questions) {
+    // loop inside questions array
+    const answer = askQuestion(question); // restored answer stored in this const,
+    score += checkAnswer(question, answer); // see if returned with 1 or zero then add
     console.log(
-      `%cQuestion ${index + 1}:`,
-      "color: #4285F4; font-weight: bold; font-size: 16px;"
-    );
-    displayQuestion(question);
-
-    // Set up timer
-    let timeLeft = timePerQuestion;
-    const timer = setInterval(() => {
-      console.log(
-        `%cTime left: ${timeLeft} seconds`,
-        "color: #4285F4; font-size: 14px;"
-      );
-      timeLeft--;
-
-      if (timeLeft < 0) {
-        clearInterval(timer);
-        console.log("%cTime's up!", "color: #DB4437; font-weight: bold;");
-        score += 0; // No points awarded if time runs out
-        return;
-      }
-    }, 1000);
-
-    // Ask for user's answer and validate
-    let userAnswer;
-    do {
-      userAnswer = prompt("Enter your answer (1, 2, 3, or 4):");
-      if (isNaN(userAnswer) || userAnswer < 1 || userAnswer > 4) {
-        console.log(
-          "%cInvalid input. Please enter a number between 1 and 4.",
-          "color: #DB4437; font-weight: bold;"
-        );
-      }
-    } while (isNaN(userAnswer) || userAnswer < 1 || userAnswer > 4);
-
-    // Stop timer when user inputs an answer
-    clearInterval(timer);
-
-    // Validate user's answer
-    score += validateAnswer(question, userAnswer);
-  });
-
-  // Display final score
+      `\n%cYour current score is: ${score} out of ${questions.length}`,
+      "color: #795548; font-size: 16px; font-weight: bold;"
+    ); // score track after every question
+  }
+  const finalMessage = `${userName}, your final score is: ${score}/${questions.length}`;
   console.log(
-    `%c\nYour final score is: ${score}/${quizQuestions.length}`,
-    "color: #4285F4; font-weight: bold; font-size: 16px;"
+    `\n%c${finalMessage}`,
+    "color: #FF5722; font-size: 18px; font-weight: bold;"
   );
+  alert(finalMessage); // Display final message in an alert box
 }
 
 // Start the quiz
-startQuiz();
+startQuiz(); // call the function
